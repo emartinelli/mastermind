@@ -11,13 +11,15 @@ module Main where
     nLstOcurrences lst lst2 = aux lst lst2 0
     aux _ [] ac = ac
     aux lst (a:x) ac
-                    |a elem lst = 1+ac
+                    |elem a lst = 1+ac
+                    |otherwise = aux lst x ac
 
     nLstOcurrencesAtSamePos :: [Integer] -> [Integer] -> Integer
     nLstOcurrencesAtSamePos lst lst2 = aux2 lst lst2 0
     aux2 _ [] ac = ac
     aux2 lst (a:x) ac
                     |elemIndex a lst = 1+ac
+                    |otherwise = aux2 lst x ac
 
     putPins :: [Integer] -> [Integer] -> [Char]
     putPins _ [] = []
