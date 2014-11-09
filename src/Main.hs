@@ -1,4 +1,5 @@
 module Main where
+    import Data.List
 
     genLsts:: [[Integer]]
     genLsts = [[w, x, y, z] | w <- [1..7], x <- [1..7], y <- [1..7], z <- [1..7], w /= x, w /= y, w /= z, x /= y, x /= z, y /= z]
@@ -6,9 +7,21 @@ module Main where
     getTheSecret :: Int -> [Integer]
     getTheSecret index = genLsts !! index
 
-    isMyAnswerCorrect :: [Int] -> [Int] -> [Char]
-    isMyAnswerCorrect _ [] = []
-    isMyAnswerCorrect secret input
+    nLstOcurrences :: [Integer] -> [Integer] -> Integer
+    nLstOcurrences lst lst2 = aux lst lst2 0
+    aux _ [] ac = ac
+    aux lst (a:x) ac
+                    |a elem lst = 1+ac
+
+    nLstOcurrencesAtSamePos :: [Integer] -> [Integer] -> Integer
+    nLstOcurrencesAtSamePos lst lst2 = aux2 lst lst2 0
+    aux2 _ [] ac = ac
+    aux2 lst (a:x) ac
+                    |elemIndex a lst = 1+ac
+
+    putPins :: [Integer] -> [Integer] -> [Char]
+    putPins _ [] = []
+    putPins secret input
                         |input == secret = ['p','p','p','p']
                         |otherwise = ['v','v','v','v']
 
