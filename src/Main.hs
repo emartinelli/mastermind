@@ -12,16 +12,16 @@ module Main where
     nLstOcurrences lst lst2 = aux lst lst2 0
     aux _ [] ac = ac
     aux lst (a:x) ac
-                    |elem a lst = 1+ac
+                    |elem a lst = aux lst x (ac + 1)
                     |otherwise = aux lst x ac
 
     nLstOcurrencesAtSamePos :: [Int] -> [Int] -> Int
-    aux2 :: [Int] -> [Int] -> Int -> Int
-    nLstOcurrencesAtSamePos lst lst2 = aux2 lst lst2 0
-    aux2 _ [] ac = ac
-    aux2 lst lst2@(a:x) ac
-                    |elemIndex a lst == elemIndex a lst2 = 1+ac
-                    |otherwise = aux2 lst x a
+    aux2 :: [Int] -> [Int] -> [Int] -> Int -> Int
+    nLstOcurrencesAtSamePos lst lst2 = aux2 lst lst2 lst2 0
+    aux2 _ _ [] ac = ac
+    aux2 lst lst2 (a:x) ac
+                    |elemIndices a lst == elemIndices a lst2 = aux2 lst lst2 x (ac + 1)
+                    |otherwise = aux2 lst lst2 x ac
 
     returnPins :: Int -> Int -> String
     returnPins 0 0 = "vvvv"
@@ -59,19 +59,21 @@ module Main where
 
     game :: IO ()
     game = do
-        input <- getLine
-        gameInput input
+            gameInput
 
     gameTest :: [Int] -> [Int] -> IO ()
     gameTest secret input =
-                            do
-                                print secret
-                                print input
-                                print (nLstOcurrencesAtSamePos secret input)
-                                print (nLstOcurrences secret input)
+                            let pins = putPins secret input in
+                                if pins == "pppp" then
+                                    print "You win!"
+                                else
+                                    do
+                                        print ("Try again Tip: "++ pins)
+                                        gameInput
 
-    gameInput :: String -> IO ()
-    gameInput input =
+    gameInput :: IO ()
+    gameInput = do
+        input <- getLine
         let maybeList = getListFromString input in
             case maybeList of
                 Just l  -> (gameTest (getTheSecret 5) l)
