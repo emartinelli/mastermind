@@ -17,9 +17,14 @@ module Main where
     nLstOcurrencesAtSamePos :: [Integer] -> [Integer] -> Integer
     nLstOcurrencesAtSamePos lst lst2 = aux2 lst lst2 0
     aux2 _ [] ac = ac
-    aux2 lst (a:x) ac
-                    |elemIndex a lst = 1+ac
-                    |otherwise = aux2 lst x ac
+    aux2 lst lst2@(a:x) ac
+                    |elemIndex a lst == elemIndex a lst2 = 1+ac
+                    |otherwise = aux2 lst x a
+
+    returnPins :: [Integer] -> [Integer] -> [Char]
+    returnPins lst lst2 = aux3 lst lst2 ['v','v','v','v']
+    aux3 _ [] ac = ac
+    aux3 lst lst2 ac | nLstOcurrencesAtSamePos lst lst2 == 4 = ['p','p','p','p']
 
     putPins :: [Integer] -> [Integer] -> [Char]
     putPins _ [] = []
