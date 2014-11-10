@@ -8,6 +8,7 @@ module Main where
     getTheSecret index = genLsts !! index
 
     nLstOcurrences :: [Integer] -> [Integer] -> Integer
+    aux :: [Integer] -> [Integer] -> Integer -> Integer
     nLstOcurrences lst lst2 = aux lst lst2 0
     aux _ [] ac = ac
     aux lst (a:x) ac
@@ -15,22 +16,29 @@ module Main where
                     |otherwise = aux lst x ac
 
     nLstOcurrencesAtSamePos :: [Integer] -> [Integer] -> Integer
+    aux2 :: [Integer] -> [Integer] -> Integer -> Integer
     nLstOcurrencesAtSamePos lst lst2 = aux2 lst lst2 0
     aux2 _ [] ac = ac
     aux2 lst lst2@(a:x) ac
                     |elemIndex a lst == elemIndex a lst2 = 1+ac
                     |otherwise = aux2 lst x a
 
-    returnPins :: [Integer] -> [Integer] -> [Char]
-    returnPins lst lst2 = aux3 lst lst2 ['v','v','v','v']
-    aux3 _ [] ac = ac
-    aux3 lst lst2 ac | nLstOcurrencesAtSamePos lst lst2 == 4 = ['p','p','p','p']
+    returnPins :: Integer -> Integer -> String
+    returnPins 0 0 = "vvvv"
+    returnPins blacks blacksPlusWhites = createString blacks 'p' ++
+                                         createString (blacksPlusWhites - blacks) 'b' ++
+                                         createString (4 - blacksPlusWhites) 'v'
 
-    putPins :: [Integer] -> [Integer] -> [Char]
+    createString :: Integer -> Char -> String
+    createString 0 _  = []
+    createString n _ |n < 0 = []
+    createString n s = s : createString (n - 1) s
+
+    putPins :: [Integer] -> [Integer] -> String
     putPins _ [] = []
     putPins secret input
-                        |input == secret = ['p','p','p','p']
-                        |otherwise = ['v','v','v','v']
+                        |input == secret = "pppp"
+                        |otherwise = returnPins (nLstOcurrencesAtSamePos secret input) (nLstOcurrences secret input)
 
     maybeRead :: Read a => String -> Maybe a
     maybeRead s = case reads s of
@@ -54,11 +62,14 @@ module Main where
         input <- getLine
         gameInput input
 
+    gameTest :: [Integer] -> [Integer] -> IO ()
+    gameTest 1 0 = print 1
+
     gameInput :: String -> IO ()
-    gameInput input = do
+    gameInput input =
         let maybeList = getListFromString input in
             case maybeList of
-                Just l  -> print (sum l)
+                Just l  -> gameTest (getTheSecret 5) input
                 Nothing -> error formatError
 
     main :: IO ()
