@@ -63,7 +63,8 @@ module Main where
         gameInput input
 
     gameTest :: [Integer] -> [Integer] -> IO ()
-    gameTest 1 0 = print 1
+    gameTest secret input = |secret == input print "You win!"
+                            |otherwise print "Try again" ++ putPins
 
     gameInput :: String -> IO ()
     gameInput input =
