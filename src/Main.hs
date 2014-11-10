@@ -1,5 +1,6 @@
 module Main where
     import Data.List
+    import Data.Char
 
     genLsts:: [[Int]]
     genLsts = [[w, x, y, z] | w <- [1..7], x <- [1..7], y <- [1..7], z <- [1..7], w /= x, w /= y, w /= z, x /= y, x /= z, y /= z]
@@ -59,24 +60,26 @@ module Main where
 
     game :: IO ()
     game = do
-            gameInput
+            gameInput 10
 
-    gameTest :: [Int] -> [Int] -> IO ()
-    gameTest secret input =
+    gameTest :: [Int] -> [Int] -> Int -> IO ()
+    gameTest secret input count =
                             let pins = putPins secret input in
-                                if pins == "pppp" then
+                                if count < 1 then
+                                    print "You lost! :/"
+                                else if pins == "pppp" then
                                     print "You win!"
                                 else
                                     do
-                                        print ("Try again Tip: "++ pins)
-                                        gameInput
+                                        print ("Try again! You have more "++ [(chr count)] ++ " tries. Tip: "++ pins)
+                                        gameInput (count-1)
 
-    gameInput :: IO ()
-    gameInput = do
+    gameInput :: Int -> IO ()
+    gameInput count = do
         input <- getLine
         let maybeList = getListFromString input in
             case maybeList of
-                Just l  -> (gameTest (getTheSecret 5) l)
+                Just l  -> (gameTest (getTheSecret 5) l count)
                 Nothing -> error formatError
 
     main :: IO ()
