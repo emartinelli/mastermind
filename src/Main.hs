@@ -3,12 +3,15 @@ module Main where
     import Data.Char
     import System.IO.Unsafe
     import System.Random
--- Cria uma lista com varias lista que possuem as combinações possiveis sem repetição
+
+-- Cria uma lista de listas que possuem todas as combinações possiveis de 4 elementos de 1 à 7 sem repetição
     genLsts:: [[Int]]
     genLsts = [[w, x, y, z] | w <- [1..7], x <- [1..7], y <- [1..7], z <- [1..7], w /= x, w /= y, w /= z, x /= y, x /= z, y /= z]
+
 -- Função que pega uma combinação
     getTheSecret :: Int -> [Int]
     getTheSecret index = genLsts !! index
+
 -- Função que retorna o numero de pinos que o usuario acertou nao importando se foi na posicao correta
     nLstOcurrences :: [Int] -> [Int] -> Int
     aux :: [Int] -> [Int] -> Int -> Int
@@ -17,6 +20,7 @@ module Main where
     aux lst (a:x) ac
                     |elem a lst = aux lst x (ac + 1)
                     |otherwise = aux lst x ac
+
 -- Função que retorna o numero de pinos que o usuario acertou importando se foi na posicao correta
     nLstOcurrencesAtSamePos :: [Int] -> [Int] -> Int
     aux2 :: [Int] -> [Int] -> [Int] -> Int -> Int
@@ -25,6 +29,7 @@ module Main where
     aux2 lst lst2 (a:x) ac
                     |elemIndices a lst == elemIndices a lst2 = aux2 lst lst2 x (ac + 1)
                     |otherwise = aux2 lst lst2 x ac
+
 -- Retorna uma string com os pinos pretos,brancos e vazio, nao mostra na ordem que estao os pinos na senha correta
     returnPins :: Int -> Int -> String
     returnPins 0 0 = "vvvv"
@@ -32,11 +37,13 @@ module Main where
                                          createString (blacksPlusWhites - blacks) 'b' ++
                                          createString (4 - blacksPlusWhites) 'v'
 
+-- Cria uma String com caracteres iguais
     createString :: Int -> Char -> String
     createString 0 _  = []
     createString n _ |n < 0 = []
     createString n s = s : createString (n - 1) s
 
+-- Compara o segredo e entrada do usuário. Retorna os pinos correspondentes
     putPins :: [Int] -> [Int] -> String
     putPins _ [] = []
     putPins secret input
@@ -60,6 +67,12 @@ module Main where
     formatError :: String
     formatError = "Bad format. Good Bye."
 
+    loserMessage :: String
+    loserMessage = "You lose! :/"
+
+    winnerMessage :: String
+    winnerMessage = "You win! \\o/"
+
     game :: [Int] -> IO ()
     game ran = do
             gameInput ran 10
@@ -67,10 +80,10 @@ module Main where
     gameTest :: [Int] -> [Int] -> Int -> IO ()
     gameTest secret input count =
                             let pins = putPins secret input in
-                                if count < 1 then
-                                    print "You lost! :/"
+                                if count < 2 then
+                                    print loserMessage
                                 else if pins == "pppp" then
-                                    print "You win!"
+                                    print winnerMessage
                                 else
                                     do
                                         print ("Try again! You have more "++ [intToDigit (count-1)] ++ " tries. Tip: "++ pins)
