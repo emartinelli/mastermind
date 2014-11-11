@@ -60,9 +60,9 @@ module Main where
     formatError :: String
     formatError = "Bad format. Good Bye."
 
-    game :: IO ()
-    game = do
-            gameInput 10
+    game :: [Int] -> IO ()
+    game ran = do
+            gameInput ran 10
 
     gameTest :: [Int] -> [Int] -> Int -> IO ()
     gameTest secret input count =
@@ -73,20 +73,20 @@ module Main where
                                     print "You win!"
                                 else
                                     do
-                                        print ("Try again! You have more "++ [(chr count)] ++ " tries. Tip: "++ pins)
-                                        print(secret)
-                                        gameInput (count-1)
+                                        print ("Try again! You have more "++ [intToDigit count] ++ " tries. Tip: "++ pins)
+                                        print (secret)
+                                        gameInput secret (count-1)
 
-    gameInput :: Int -> IO ()
-    gameInput count = do
+    gameInput :: [Int] -> Int -> IO ()
+    gameInput rand count = do
         input <- getLine
         let maybeList = getListFromString input in
             case maybeList of
-                Just l  -> (gameTest (getTheSecret (unsafePerformIO (getStdRandom (randomR (0, length genLsts))))) l count)
+                Just l  -> (gameTest rand l count)
                 Nothing -> error formatError
 
     main :: IO ()
     main = do
         putStrLn welcome
         putStrLn instructions
-        game
+        game (getTheSecret (unsafePerformIO (getStdRandom (randomR (0, length genLsts)))))
