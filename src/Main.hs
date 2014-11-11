@@ -50,11 +50,13 @@ module Main where
                         |input == secret = "pppp"
                         |otherwise = returnPins (nLstOcurrencesAtSamePos secret input) (nLstOcurrences secret input)
 
+-- Tratamento de entrada
     maybeRead :: Read a => String -> Maybe a
     maybeRead s = case reads s of
                   [(x,"")]    -> Just x
                   _           -> Nothing
 
+-- Tratamento de entrada
     getListFromString :: String -> Maybe [Int]
     getListFromString str = maybeRead $ "[" ++ str ++ "]"
 
@@ -89,6 +91,7 @@ module Main where
                                         print ("Try again! You have more "++ [intToDigit (count-1)] ++ " tries. Tip: "++ pins)
                                         gameInput secret (count-1)
 
+-- Tratamento de entrada
     gameInput :: [Int] -> Int -> IO ()
     gameInput rand count = do
         input <- getLine
@@ -96,6 +99,7 @@ module Main where
             case maybeList of
                 Just l  -> (gameTest rand l count)
                 Nothing -> error formatError
+
 -- Função Principal
     main :: IO ()
     main = do
