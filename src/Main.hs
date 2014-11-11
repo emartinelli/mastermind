@@ -1,6 +1,8 @@
 module Main where
     import Data.List
     import Data.Char
+    import System.IO.Unsafe
+    import System.Random
 
     genLsts:: [[Int]]
     genLsts = [[w, x, y, z] | w <- [1..7], x <- [1..7], y <- [1..7], z <- [1..7], w /= x, w /= y, w /= z, x /= y, x /= z, y /= z]
@@ -72,6 +74,7 @@ module Main where
                                 else
                                     do
                                         print ("Try again! You have more "++ [(chr count)] ++ " tries. Tip: "++ pins)
+                                        print(secret)
                                         gameInput (count-1)
 
     gameInput :: Int -> IO ()
@@ -79,7 +82,7 @@ module Main where
         input <- getLine
         let maybeList = getListFromString input in
             case maybeList of
-                Just l  -> (gameTest (getTheSecret 5) l count)
+                Just l  -> (gameTest (getTheSecret (unsafePerformIO (getStdRandom (randomR (0, length genLsts))))) l count)
                 Nothing -> error formatError
 
     main :: IO ()
