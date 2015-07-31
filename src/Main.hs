@@ -30,7 +30,7 @@ module Main where
                     |elemIndices a lst == elemIndices a lst2 = aux2 lst lst2 x (ac + 1)
                     |otherwise = aux2 lst lst2 x ac
 
--- Retorna uma string com os pinos pretos,brancos e vazio, nao mostra na ordem que estao os pinos na senha correta
+-- Retorna uma string com os pinos pretos, brancos e vazios, nao mostra na ordem que estao os pinos na senha correta
     returnPins :: Int -> Int -> String
     returnPins 0 0 = "vvvv"
     returnPins blacks blacksPlusWhites = createString blacks 'p' ++
@@ -43,7 +43,7 @@ module Main where
     createString n _ |n < 0 = []
     createString n s = s : createString (n - 1) s
 
--- Compara o segredo e entrada do usuário. Retorna os pinos correspondentes
+-- Compara o segredo e a entrada do usuário. Retorna os pinos correspondentes
     putPins :: [Int] -> [Int] -> String
     putPins _ [] = []
     putPins secret input
@@ -78,7 +78,8 @@ module Main where
     game :: [Int] -> IO ()
     game ran = do
             gameInput ran 10
--- Verifica se o usuario acertou a combinação ou não, e senão acertou mostra quantas tentativas falta
+            
+-- Verifica se o usuario acertou a combinação ou não, e se não acertou mostra quantas tentativas faltam
     gameTest :: [Int] -> [Int] -> Int -> IO ()
     gameTest secret input count =
                             let pins = putPins secret input in
